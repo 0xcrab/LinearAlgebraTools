@@ -341,6 +341,39 @@ Vector linear_solve_cholesky_banded(const Matrix & A, const Vector & b, int m) {
 	return x;
 }
 
+std::tuple<Matrix, Matrix, Matrix, Matrix> inverse(const Matrix & A)
+{
+	assert(A.cols() == A.rows());
+	Matrix P, L, U;
+	std::tie(P, L, U) = lu_row_pivoting(A);
+
+	const int n = A.cols();
+	Matrix Linv = Matrix::Zero(n, n);
+	Matrix Uinv = Matrix::Zero(n, n);
+	
+	for (int i = 0; i < n; i++) {
+
+		Vector e = Vector::Zero(n);
+		e[i] = 1;
+		Linv.col(i) = forward_subst(L, e);
+		Uinv.col(i) = backward_subst(U, e);
+	}
+
+	Matrix Ainv = Uinv * Linv * P;
+	return std::make_tuple(Ainv, Linv, Uinv, P);
+}
+
+Vector linear_solve_lu_row_pivot(const Matrix & A, const Vector & b)
+{
+	assert(A.cols() == A.rows());
+	assert(A.rows() == b.rows());
+	Matrix P, L, U;
+	std::tie(P, L, U) = lu_row_pivoting(A);
+	Vector v = forward_subst(L, P*b);
+	v = backward_subst(U, v);
+	return v;
+}
+
 std::tuple<Vector, int> linear_solve_jacobi_iter(const Matrix & A, const Vector & b, const Vector & x0, 
 	double tol, Criterion_Type type)
 {

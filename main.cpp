@@ -1,6 +1,7 @@
 #include <iostream>
 #include <array>
 #include "LinearSolver.h"
+#include "Load_CSV.h"
 #include <vector>
 #include <numeric>
 #include <iomanip>
@@ -100,6 +101,10 @@ void testDecompositionSolvers() {
 		Vector X = linear_solve_cholesky(M, b);
 		PRINT(X);
 		PRINT(M*X);
+
+		Vector Y = linear_solve_lu_row_pivot(M, b);
+		PRINT(Y);
+		PRINT(M*Y);
 	}
 	catch (...) {}
 
@@ -185,8 +190,15 @@ void testIterationSolvers() {
 
 int main() {
 
-	//testDecompositionSolvers();
+	testDecompositionSolvers();
 
-	testIterationSolvers();
+	//testIterationSolvers();
+	try {
+		auto M = load_csv("./test.csv");
+		PRINT(M);
+	}
+	catch (std::ios_base::failure e) {
+		std::cout << e.what() << std::endl;
+	}
 	return 0;
 }

@@ -81,6 +81,18 @@ Vector linear_solve_cholesky_tridiag(const Matrix& A, const Vector& b);
 	*/
 Vector linear_solve_cholesky_banded(const Matrix& A, const Vector& b, int m);
 
+/* Linear solver using LU decomposition with ro 
+	pivoting
+	*/
+
+Vector linear_solve_lu_row_pivot(const Matrix& A, const Vector& b);
+
+/* Use LU decomposition with row pivoting to find matrix inverse
+	The return values are:
+	Ainv, Linv, Uinv, P
+*/
+std::tuple<Matrix, Matrix, Matrix, Matrix>  inverse(const Matrix& A);
+
 
 /* Define Stop Criterion
 	- Residual-based stopping criterion
